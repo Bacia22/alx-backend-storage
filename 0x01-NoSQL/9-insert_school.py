@@ -3,5 +3,5 @@
 
 
 def insert_school(mongo_collection, **Kwargs):
-    """ Insert a nnew document ins a collection based on kwargs """
+    """ Insert a new document in a collection based on kwargs """
     return mongo_collection.insert(kwargs)
