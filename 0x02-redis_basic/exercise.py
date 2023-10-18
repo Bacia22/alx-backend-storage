@@ -3,24 +3,24 @@
 """
 import redis
 from uuid import uuid4
-from typiing import Callable, Optional, Union
+from typing import Callable, Optional, Union
 from functools import wraps
 
 
-def cont_call(method: Callable) -> Callable:
+def count_calls(method: Callable) -> Callable:
     """count_calls function
 
     Args:
-    method[Callable]:
+        method[Callable]:
 
     returns:
-    Callable:
+        Callable:
     """
     key = method.__qualname__
 
     @wraps(method)
-    def wrapper(sel, *args, kwargs):
-        """wrapper decorated fucntion
+    def wrapper(self, *args, **kwargs):
+        """wrapper decorated function
 
         Returns:
         """
@@ -34,10 +34,10 @@ def call_history(method: Callable) -> Callable:
     """call_history function
 
     Args:
-    method[Callable]:
+        method[Callable]:
 
     Returns:
-    Callable:
+        Callable:
     """
     key = method.__qualname__
     inputs, outputs = key + ":inputs", key + ":outputs"
@@ -48,8 +48,8 @@ def call_history(method: Callable) -> Callable:
 
         Returns:
         """
-        sef._redis.rpush(inputs, str(args))
-        output = str(method(self, *args, kwargs))
+        self._redis.rpush(inputs, str(args))
+        output = str(method(self, *args, **kwargs))
         self._redis.rpush(outputs, output)
         return output
 
@@ -57,26 +57,26 @@ def call_history(method: Callable) -> Callable:
 
 
 def replay(method: Callable) -> None:
-    """reply function
+    """replay function
 
     Args:
-    method[Callable]:
+        method[Callable]:
     """
     key = method.__qualname__
     inputs, outputs = key + ":inputs", key + ":outputs"
-    redis = methos.__self__.__redis
+    redis = method.__self__._redis
     count = redis.get(key).decode("utf-8")
-    print(f"{keys} was called {count} times:")
-    IOTuple = zip(redis.lrange(inputs, 0 -1), redis,lrange(outputs, 0, -1))
+    print(f"{key} was called {count} times:")
+    IOTuple = zip(redis.lrange(inputs, 0, -1), redis.lrange(outputs, 0, -1))
     for inp, outp in list(IOTuple):
-        attr, data = inp.decode("utf-8"), outp.decode("utf-8)
-        print(f"{key}9*{attr}) -> {data}")
+        attr, data = inp.decode("utf-8"), outp.decode("utf-8")
+        print(f"{key}(*{attr}) -> {data}")
 
 
-        class Cache
-        """Cache class"""
+class Cache:
+    """Cache class"""
 
-        def __init__(self):
+    def __init__(self):
         """init function"""
         self._redis = redis.Redis()
         self._redis.flushdb()
